@@ -39,17 +39,11 @@ window.addEventListener('DOMContentLoaded', () => {
   const deadline = '2025-07-02';
 
   function getTimeRemaining(endtime) {
-    let days, hours, minutes, seconds;
-
-    const total = Date.parse(endtime) - Date.parse(new Date());
-    if (total <= 0) {
-      days = hours = minutes = seconds = 0;
-    } else {
-      days = Math.floor(total / (1000 * 60 * 60 * 24));
-      hours = Math.floor((total / (1000 * 60 * 60)) % 24);
-      minutes = Math.floor((total / 1000 / 60) % 60);
+    const total = Date.parse(endtime) - Date.parse(new Date()),
+      days = Math.floor(total / (1000 * 60 * 60 * 24)),
+      hours = Math.floor((total / (1000 * 60 * 60)) % 24),
+      minutes = Math.floor((total / 1000 / 60) % 60),
       seconds = Math.floor((total / 1000) % 60);
-    }
     return {
       total,
       days,
@@ -84,4 +78,31 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
   setClock('.timer', deadline);
+
+  // Modal
+
+  function showModal(showSelector, closeSelector, modalSelector) {
+    const btns = document.querySelectorAll(showSelector),
+      close = document.querySelector(closeSelector),
+      modal = document.querySelector(modalSelector);
+
+    btns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      });
+    });
+    function closeModal() {
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+    close.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Escape') console.log(true);
+    });
+  }
+  showModal('[data-modal]', '[data-close]', '.modal');
 });

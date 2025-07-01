@@ -76,6 +76,32 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
   setClock('.timer', deadline);
+
+  // Modal
+
+  function showModal(showSelector, closeSelector, modalSelector) {
+    const btns = document.querySelectorAll(showSelector),
+      close = document.querySelector(closeSelector),
+      modal = document.querySelector(modalSelector);
+    btns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      });
+    });
+    function closeModal() {
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+    close.addEventListener('click', closeModal);
+    modal.addEventListener('click', e => {
+      if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', e => {
+      if (e.code === 'Escape') console.log(true);
+    });
+  }
+  showModal('[data-modal]', '[data-close]', '.modal');
 });
 /******/ })()
 ;
