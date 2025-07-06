@@ -197,4 +197,47 @@ window.addEventListener('DOMContentLoaded', () => {
     ).render();
   }
   showCards();
+
+  function formsListeners() {
+    const forms = document.querySelector('form');
+    const message = {
+      loading: 'Loading...',
+      success: 'Success!',
+      failure: 'Something went wrong',
+    };
+
+    forms.forEach((form) => {
+      postData(form);
+    });
+
+    const statusMessage = document.createElement('div');
+    statusMessage.classList.add('status');
+    statusMessage.textContent = message.loading;
+    form.append(statusMessage);
+
+    function postData(form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const req = new XMLHttpRequest();
+        req.open('POST', 'server.php');
+        const formData = new FormData(form);
+        req.send(formData);
+        req.addEventListener('load', () => {
+          if (req.status === 200) {
+            console.log(req.response);
+            statusMessage.textContent = message.success;
+            form.reset();
+            setTimeout(() => {
+              statusMessage.remove();
+            }, 3000);
+          } else {
+            statusMessage.textContent = message.failure;
+          }
+        });
+      });
+    }
+  }
+
+  formsListeners();
 });
