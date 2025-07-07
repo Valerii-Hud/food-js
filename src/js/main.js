@@ -211,7 +211,7 @@ window.addEventListener('DOMContentLoaded', () => {
   function formsListeners() {
     const forms = document.querySelectorAll('form');
     const message = {
-      loading: 'Loading...',
+      loading: 'img/form/spinner.svg',
       success: 'Success!',
       failure: 'Something went wrong',
     };
@@ -224,13 +224,16 @@ window.addEventListener('DOMContentLoaded', () => {
       form.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        const statusMessage = document.createElement('div');
-        statusMessage.classList.add('status');
-        statusMessage.textContent = message.loading;
-        form.append(statusMessage);
+        const statusMessage = document.createElement('img');
+        statusMessage.src = message.loading;
+        statusMessage.style.cssText = `
+        display:block;
+        margin: 0 auto;
+        `;
 
+        form.insertAdjacentElement('afterend', statusMessage);
         const req = new XMLHttpRequest();
-        req.open('POST', 'server.php');
+        req.open('POST', 'server.js');
         req.setRequestHeader('Content-type', 'application/json');
 
         const formData = new FormData(form);
