@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function getDataFromDB(url) {
       fetch(url)
         .then((data) => data.json())
-        .then((json) => console.log(json));
+        .then((json) => json);
     }
     getDataFromDB('http://localhost:3000/menu');
   }
@@ -403,6 +403,82 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   }
 
+  function calc() {
+    const result = document.querySelector('.calculating__result span');
+    let sex, height, weight, age, ratio;
+
+    function calcTotal() {
+      if (!sex || !height || !weight || !age || !ratio) {
+        result.textContent = '____';
+        return;
+      }
+      if (sex === 'female') {
+        result.textContent = Math.round(
+          (447.6 + 9.2 * weight + 3.1 * height - 4.3 * age) * ratio
+        );
+      } else {
+        result.textContent = Math.round(
+          (88.36 + 13.4 * weight + 4.8 * height - 5.7 * age) * ratio
+        );
+      }
+    }
+
+    function getStaticInformation(parentSelector, activeClass) {
+      const container = document.querySelector(parentSelector);
+      const elements = container.querySelectorAll('div');
+
+      container.addEventListener('click', (e) => {
+        const target = e.target.closest('div');
+        if (!target || !container.contains(target)) return;
+
+        if (target.hasAttribute('data-ratio')) {
+          ratio = +target.getAttribute('data-ratio');
+        } else if (target.hasAttribute('id')) {
+          sex = target.getAttribute('id');
+        }
+
+        elements.forEach((elem) => elem.classList.remove(activeClass));
+        target.classList.add(activeClass);
+
+        calcTotal();
+      });
+    }
+
+    function getInputInformation(selector) {
+      const input = document.querySelector(selector);
+      input.addEventListener('input', () => {
+        const val = +input.value;
+        if (!val || val <= 0) {
+          input.style.border = '1px solid red';
+        } else {
+          input.style.border = 'none';
+          switch (input.getAttribute('id')) {
+            case 'height':
+              height = +input.value;
+              break;
+            case 'weight':
+              weight = +input.value;
+              break;
+            case 'age':
+              age = +input.value;
+              break;
+          }
+        }
+        calcTotal();
+      });
+    }
+
+    getStaticInformation('#gender', 'calculating__choose-item_active');
+    getStaticInformation(
+      '.calculating__choose_big',
+      'calculating__choose-item_active'
+    );
+
+    getInputInformation('#height');
+    getInputInformation('#weight');
+    getInputInformation('#age');
+  }
+
   function main() {
     tabs();
     timer();
@@ -410,6 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cards();
     forms();
     slider();
+    calc();
   }
   main();
 });
