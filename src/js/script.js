@@ -405,7 +405,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function calc() {
     const result = document.querySelector('.calculating__result span');
-    let sex, height, weight, age, ratio;
+    let sex = 'female',
+      height,
+      weight,
+      age,
+      ratio = '1.375';
 
     function calcTotal() {
       if (!sex || !height || !weight || !age || !ratio) {
@@ -427,20 +431,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const container = document.querySelector(parentSelector);
       const elements = container.querySelectorAll('div');
 
-      container.addEventListener('click', (e) => {
-        const target = e.target.closest('div');
-        if (!target || !container.contains(target)) return;
+      elements.forEach((elem) => {
+        elem.addEventListener('click', (e) => {
+          if (e.target.getAttribute('data-ratio'))
+            ratio = +e.target.getAttribute('data-ratio');
+          else {
+            sex = e.target.getAttribute('id');
+          }
+          elements.forEach((elem) => elem.classList.remove(activeClass));
+          e.target.classList.add(activeClass);
 
-        if (target.hasAttribute('data-ratio')) {
-          ratio = +target.getAttribute('data-ratio');
-        } else if (target.hasAttribute('id')) {
-          sex = target.getAttribute('id');
-        }
-
-        elements.forEach((elem) => elem.classList.remove(activeClass));
-        target.classList.add(activeClass);
-
-        calcTotal();
+          calcTotal();
+        });
       });
     }
 
