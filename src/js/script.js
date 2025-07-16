@@ -405,17 +405,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function calc() {
     const result = document.querySelector('.calculating__result span');
-    let sex = 'female',
-      height,
-      weight,
-      age,
-      ratio = '1.375';
+    let sex, height, weight, age, ratio;
+
+    if (localStorage.getItem('sex')) {
+      sex = localStorage.getItem('sex');
+    } else {
+      sex = 'female';
+      localStorage.setItem('sex', sex);
+    }
+
+    if (localStorage.getItem('ratio')) {
+      ratio = +localStorage.getItem('ratio');
+    } else {
+      ratio = 1.375;
+      localStorage.setItem('ratio', ratio);
+    }
+
+    function initLocalSettings(selector, activeClass) {
+      const elements = document.querySelectorAll(selector);
+
+      elements.forEach((elem) => {
+        elem.classList.remove(activeClass);
+
+        if (elem.getAttribute('id') === localStorage.getItem('sex')) {
+          elem.classList.add(activeClass);
+        }
+
+        if (elem.getAttribute('data-ratio') === localStorage.getItem('ratio')) {
+          elem.classList.add(activeClass);
+        }
+      });
+    }
+
+    initLocalSettings('#gender div', 'calculating__choose-item_active');
+    initLocalSettings(
+      '.calculating__choose_big div',
+      'calculating__choose-item_active'
+    );
 
     function calcTotal() {
       if (!sex || !height || !weight || !age || !ratio) {
         result.textContent = '____';
         return;
       }
+
       if (sex === 'female') {
         result.textContent = Math.round(
           (447.6 + 9.2 * weight + 3.1 * height - 4.3 * age) * ratio
@@ -433,12 +466,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
       elements.forEach((elem) => {
         elem.addEventListener('click', (e) => {
-          if (e.target.getAttribute('data-ratio'))
+          if (e.target.getAttribute('data-ratio')) {
             ratio = +e.target.getAttribute('data-ratio');
-          else {
+            localStorage.setItem('ratio', ratio);
+          } else {
             sex = e.target.getAttribute('id');
+            localStorage.setItem('sex', sex);
           }
-          elements.forEach((elem) => elem.classList.remove(activeClass));
+
+          elements.forEach((el) => el.classList.remove(activeClass));
           e.target.classList.add(activeClass);
 
           calcTotal();
@@ -456,13 +492,13 @@ document.addEventListener('DOMContentLoaded', () => {
           input.style.border = 'none';
           switch (input.getAttribute('id')) {
             case 'height':
-              height = +input.value;
+              height = val;
               break;
             case 'weight':
-              weight = +input.value;
+              weight = val;
               break;
             case 'age':
-              age = +input.value;
+              age = val;
               break;
           }
         }
@@ -479,6 +515,8 @@ document.addEventListener('DOMContentLoaded', () => {
     getInputInformation('#height');
     getInputInformation('#weight');
     getInputInformation('#age');
+
+    calcTotal();
   }
 
   function main() {
