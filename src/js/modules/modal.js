@@ -1,31 +1,39 @@
-function modal() {
-  const modal = document.querySelector('.modal');
-  const modalTimerId = setTimeout(openModal, 10000);
+export function openModal(modalSelector, modalTimerId) {
+  const modal = document.querySelector(modalSelector);
 
-  function openModal() {
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-    clearInterval(modalTimerId);
-  }
+  modal.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+  console.log(modalTimerId);
+  if (modalTimerId) clearInterval(modalTimerId);
+}
 
-  function closeModal() {
-    modal.style.display = 'none';
-    document.body.style.overflow = '';
-  }
+export function closeModal(modalSelector) {
+  const modal = document.querySelector(modalSelector);
+
+  modal.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function modal(triggerSelector, modalSelector, modalTimerId) {
+  const modal = document.querySelector(modalSelector);
 
   function showModal(triggerSelector) {
     const btns = document.querySelectorAll(triggerSelector);
-    btns.forEach((btn) => btn.addEventListener('click', openModal));
+    btns.forEach((btn) =>
+      btn.addEventListener('click', () =>
+        openModal(modalSelector, modalTimerId)
+      )
+    );
 
     modal.addEventListener('click', (e) => {
       if (e.target === modal || e.target.getAttribute('data-close') === '') {
-        closeModal();
+        closeModal(modalSelector);
       }
     });
 
     document.addEventListener('keydown', (e) => {
       if (e.code === 'Escape' && getComputedStyle(modal).display === 'block') {
-        closeModal();
+        closeModal(modalSelector);
       }
     });
 
@@ -34,7 +42,7 @@ function modal() {
         window.pageYOffset + document.documentElement.clientHeight >=
         document.documentElement.scrollHeight - 1
       ) {
-        openModal();
+        openModal(modalSelector, modalTimerId);
         window.removeEventListener('scroll', showModalByScroll);
       }
     }
@@ -42,7 +50,7 @@ function modal() {
     window.addEventListener('scroll', showModalByScroll);
   }
 
-  showModal('[data-modal]');
+  showModal(triggerSelector);
 }
-
-module.exports = modal;
+export default modal;
+export { closeModal, openModal };

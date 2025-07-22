@@ -1,5 +1,7 @@
-function forms() {
-  const forms = document.querySelectorAll('form');
+import { postData } from '../services/services';
+import { closeModal, openModal } from './modal';
+function forms(formSelector, modalTimerId) {
+  const forms = document.querySelectorAll(formSelector);
   const message = {
     loading: 'img/form/spinner.svg',
     success: 'Спасибо! Скоро мы с вами свяжемся',
@@ -9,28 +11,6 @@ function forms() {
   forms.forEach((form) => {
     bindPostData(form);
   });
-
-  async function postData(url, data) {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: data,
-    });
-
-    const contentType = res.headers.get('content-type');
-    if (!res.ok) {
-      throw new Error(`Ошибка сервера: ${res.status}`);
-    }
-
-    if (contentType && contentType.includes('application/json')) {
-      return await res.json();
-    } else {
-      const text = await res.text();
-      throw new Error(`Ожидался JSON, получено:\n${text}`);
-    }
-  }
 
   function bindPostData(form) {
     form.addEventListener('submit', (e) => {
@@ -77,13 +57,13 @@ function forms() {
     `;
 
     document.querySelector('.modal').append(thanksModal);
-    openModal();
+    openModal('.modal', modalTimerId);
 
     setTimeout(() => {
       thanksModal.remove();
       prevModalDialog.classList.remove('hide');
       prevModalDialog.classList.add('show');
-      closeModal();
+      closeModal('.modal');
     }, 4000);
   }
 
@@ -95,4 +75,4 @@ function forms() {
   getDataFromDB('http://localhost:3000/menu');
 }
 
-module.exports = forms;
+export default forms;
