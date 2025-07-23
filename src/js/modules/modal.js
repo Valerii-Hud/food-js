@@ -1,4 +1,4 @@
-export function openModal(modalSelector, modalTimerId) {
+function openModal(modalSelector, modalTimerId) {
   const modal = document.querySelector(modalSelector);
 
   modal.style.display = 'block';
@@ -7,7 +7,7 @@ export function openModal(modalSelector, modalTimerId) {
   if (modalTimerId) clearInterval(modalTimerId);
 }
 
-export function closeModal(modalSelector) {
+function closeModal(modalSelector) {
   const modal = document.querySelector(modalSelector);
 
   modal.style.display = 'none';

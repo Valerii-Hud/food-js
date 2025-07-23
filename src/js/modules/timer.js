@@ -1,6 +1,4 @@
-function timer() {
-  const deadline = '2027-07-02';
-
+function timer(id, deadline) {
   function getTimeRemaining(endtime) {
     const total = Date.parse(endtime) - Date.parse(new Date());
     const days = Math.floor(total / (1000 * 60 * 60 * 24));
@@ -37,7 +35,7 @@ function timer() {
     }
   }
 
-  setClock('.timer', deadline);
+  setClock(id, deadline);
 }
 
 export default timer;
